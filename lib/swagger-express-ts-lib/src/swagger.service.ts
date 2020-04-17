@@ -355,6 +355,7 @@ export class SwaggerService {
 
     public addApiModel(args: IApiModelArgs, target: any): any {
         const definitionKey = target.name;
+
         let swaggerBuildDefinitionModel: ISwaggerBuildDefinitionModel = this
             .modelsMap[definitionKey];
         if (!swaggerBuildDefinitionModel) {
@@ -365,17 +366,19 @@ export class SwaggerService {
         }
         if (args) {
             swaggerBuildDefinitionModel.description = args.description;
-            if (args.name) {
-                const name: string = _.upperFirst(args.name);
-                this.modelsMap[name] = _.cloneDeep(
-                    this.modelsMap[definitionKey]
-                );
-                if (!_.isEqual(name, definitionKey)) {
-                    delete this.modelsMap[definitionKey];
-                    delete this.data.definitions[definitionKey];
-                }
-            }
         }
+
+        const name: string = _.upperFirst(args.name || target.name);
+
+        this.modelsMap[name] = _.cloneDeep(
+            this.modelsMap[definitionKey]
+        );
+
+        if (!_.isEqual(name, definitionKey)) {
+            delete this.modelsMap[definitionKey];
+            delete this.data.definitions[definitionKey];
+        }
+
         this.setDefinitions(this.modelsMap);
     }
 
